@@ -2,10 +2,12 @@ package com.residex.student.entity;
 
 import com.residex.common.entity.BaseEntity;
 import com.residex.department.entity.Department;
+import com.residex.room.entity.Room;
 import com.residex.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 
 @Getter
 @Setter
@@ -39,5 +41,9 @@ public class Student extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
+    private Room room;
     
 }

@@ -10,6 +10,7 @@ import com.residex.department.repository.DepartmentRepository;
 import com.residex.student.entity.Student;
 import com.residex.student.repository.StudentRepository;
 import com.residex.user.entity.User;
+import com.residex.security.JwtService;
 import com.residex.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,6 +24,7 @@ public class AuthServiceImpl implements AuthService {
     private final StudentRepository studentRepository;
     private final DepartmentRepository departmentRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @Override
     public AuthResponse register(RegisterRequest request) {
@@ -78,14 +80,36 @@ public class AuthServiceImpl implements AuthService {
         studentRepository.save(student);
 
         return new AuthResponse(
-                "Student registered successfully"
+                "Student registered successfully",
+                null
         );
     }
 
     @Override
     public AuthResponse login(LoginRequest request) {
+
+        User user = userRepository.findByEmail(
+                request.getEmail()
+        ).orElseThrow(() ->
+                new RuntimeException("User not found")
+        );
+
+        boolean matches = passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword()
+        );
+
+        if (!matches) {
+            throw new RuntimeException(
+                    "Invalid credentials"
+            );
+        }
+
+        String token = jwtService.generateToken(user.getEmail());
+
         return new AuthResponse(
-                "Login implementation pending"
+                "Login successful",
+                token
         );
     }
 }

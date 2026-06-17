@@ -122,4 +122,56 @@ public class LeaveServiceImpl implements LeaveService {
                 )
                 .build();
     }
+    @Override
+        public List<LeaveResponse> getPendingLeaves() {
+
+        return leaveRepository
+                .findByStatus(
+                        LeaveStatus.PENDING
+                )
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+        }
+
+        @Override
+        public LeaveResponse approveLeave(
+                Long leaveId
+        ) {
+
+        LeaveRequest leave =
+                leaveRepository.findById(leaveId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Leave not found"
+                                ));
+
+        leave.setStatus(
+                LeaveStatus.APPROVED
+        );
+
+        leaveRepository.save(leave);
+
+        return mapToResponse(leave);
+        }
+        @Override
+        public LeaveResponse rejectLeave(
+                Long leaveId
+        ) {
+
+        LeaveRequest leave =
+                leaveRepository.findById(leaveId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Leave not found"
+                                ));
+
+        leave.setStatus(
+                LeaveStatus.REJECTED
+        );
+
+        leaveRepository.save(leave);
+
+        return mapToResponse(leave);
+        }
 }

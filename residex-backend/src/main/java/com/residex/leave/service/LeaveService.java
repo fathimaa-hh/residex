@@ -11,5 +11,16 @@ public interface LeaveService {
             CreateLeaveRequest request
     );
 
+    
+
     List<LeaveResponse> getAllLeaves();
+    LeaveResponse approveLeave(
+            Long leaveId
+    );
+
+    LeaveResponse rejectLeave(
+            Long leaveId
+    );
+
+    List<LeaveResponse> getPendingLeaves();
 }

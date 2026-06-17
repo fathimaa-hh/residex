@@ -5,13 +5,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
-
-import javax.crypto.SecretKey;
-
-
 
 @Service
 public class JwtService {
@@ -22,33 +19,60 @@ public class JwtService {
         this.jwtProperties = jwtProperties;
     }
 
-    public String generateToken(String subject) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtProperties.getExpiration());
+    public String generateToken(
+            String email,
+            String role
+    ) {
 
-        Key signingKey = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8));
+        Date now = new Date();
+
+        Date expiryDate =
+                new Date(
+                        now.getTime()
+                                + jwtProperties.getExpiration()
+                );
+
+        Key signingKey =
+                Keys.hmacShaKeyFor(
+                        jwtProperties.getSecret()
+                                .getBytes(StandardCharsets.UTF_8)
+                );
 
         return Jwts.builder()
-                .subject(subject)
-                .issuedAt(now)
-                .expiration(expiryDate)
+                .setSubject(email)
+                .claim("role", role)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
                 .signWith(signingKey)
                 .compact();
     }
+
     public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
     }
 
-    public boolean isTokenValid(String token, String email) {
-        return extractUsername(token).equals(email)
+    public boolean isTokenValid(
+            String token,
+            String email
+    ) {
+
+        return extractUsername(token)
+                .equals(email)
                 && !isTokenExpired(token);
     }
-    private boolean isTokenExpired(String token) {
+
+    private boolean isTokenExpired(
+            String token
+    ) {
+
         return extractAllClaims(token)
                 .getExpiration()
                 .before(new Date());
     }
-    private Claims extractAllClaims(String token) {
+
+    private Claims extractAllClaims(
+            String token
+    ) {
 
         Key signingKey =
                 Keys.hmacShaKeyFor(
@@ -62,4 +86,4 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload();
     }
-    }
+}

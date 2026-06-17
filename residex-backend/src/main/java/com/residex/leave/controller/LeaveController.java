@@ -26,4 +26,26 @@ public class LeaveController {
     public List<LeaveResponse> getAllLeaves() {
         return leaveService.getAllLeaves();
     }
+
+    @GetMapping("/pending")
+    public List<LeaveResponse> pendingLeaves() {
+
+        return leaveService.getPendingLeaves();
+    }
+
+    @PutMapping("/{id}/approve")
+    public LeaveResponse approveLeave(
+            @PathVariable Long id
+    ) {
+
+        return leaveService.approveLeave(id);
+    }
+
+    @PutMapping("/{id}/reject")
+    public LeaveResponse rejectLeave(
+            @PathVariable Long id
+    ) {
+
+        return leaveService.rejectLeave(id);
+    }
 }

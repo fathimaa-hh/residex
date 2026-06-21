@@ -1,5 +1,6 @@
 package com.residex.config;
 
+
 import com.residex.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -34,40 +35,24 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth
 
-                                .requestMatchers(
-                                        "/api/auth/**"
-                                )
+                                .requestMatchers("/api/auth/**")
                                 .permitAll()
 
                                 .requestMatchers(
-                                        "/api/attendance/**"
-                                )
-                                .hasAnyRole(
-                                        "WARDEN",
-                                        "ADMIN"
-                                )
-
-                                .requestMatchers(
-                                        "/api/students/**"
-                                )
-                                .hasAnyRole(
-                                        "WARDEN",
-                                        "ADMIN"
-                                )
-
-                                .requestMatchers(
+                                        "/api/attendance/**",
+                                        "/api/students/**",
+                                        "/api/stay/**",
+                                        "/api/fees/**",
                                         "/api/leaves/pending",
                                         "/api/leaves/*/approve",
                                         "/api/leaves/*/reject"
                                 )
-                                .hasAnyRole(
-                                        "WARDEN",
-                                        "ADMIN"
-                                )
+                                .hasAnyRole("WARDEN", "ADMIN")
 
-                                .requestMatchers(
-                                        "/api/leaves/**"
-                                )
+                                .requestMatchers("/api/leaves/**")
+                                .authenticated()
+
+                                .requestMatchers("/api/debug/**")
                                 .authenticated()
 
                                 .anyRequest()
@@ -88,4 +73,9 @@ public class SecurityConfig {
     ) throws Exception {
         return config.getAuthenticationManager();
     }
+
+
+
+
+
 }

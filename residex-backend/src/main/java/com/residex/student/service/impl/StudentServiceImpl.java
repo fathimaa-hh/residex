@@ -1,5 +1,6 @@
 package com.residex.student.service.impl;
 
+import com.residex.exception.ResourceNotFoundException;
 import com.residex.room.entity.Room;
 import com.residex.room.repository.RoomRepository;
 import com.residex.student.dto.AssignRoomRequest;
@@ -33,7 +34,7 @@ public class StudentServiceImpl implements StudentService {
         Student student =
                 studentRepository.findById(studentId)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new ResourceNotFoundException(
                                         "Student not found"
                                 ));
 
@@ -49,7 +50,7 @@ public class StudentServiceImpl implements StudentService {
         Student student =
                 studentRepository.findById(studentId)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new ResourceNotFoundException(
                                         "Student not found"
                                 ));
 
@@ -57,9 +58,10 @@ public class StudentServiceImpl implements StudentService {
                 roomRepository.findById(
                         request.getRoomId()
                 ).orElseThrow(() ->
-                        new RuntimeException(
-                                "Room not found"
-                        ));
+                        new ResourceNotFoundException(
+                                "Student not found"
+                        )
+                        );
 
         student.setRoom(room);
 

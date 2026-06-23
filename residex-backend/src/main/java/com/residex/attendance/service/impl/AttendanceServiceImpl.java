@@ -4,6 +4,7 @@ import com.residex.attendance.entity.AttendanceRecord;
 import com.residex.attendance.repository.AttendanceRepository;
 import com.residex.attendance.service.AttendanceService;
 import com.residex.common.enums.AttendanceStatus;
+import com.residex.exception.ResourceNotFoundException;
 import com.residex.student.entity.Student;
 import com.residex.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,9 +31,10 @@ public class AttendanceServiceImpl
         Student student =
                 studentRepository.findById(studentId)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new ResourceNotFoundException(
                                         "Student not found"
-                                ));
+                                )
+                                );
 
         AttendanceRecord record =
                 new AttendanceRecord();

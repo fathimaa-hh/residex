@@ -1,6 +1,7 @@
 package com.residex.feerecord.service.impl;
 
 
+import com.residex.exception.ResourceNotFoundException;
 import com.residex.feerecord.entity.FeeRecord;
 import com.residex.feerecord.repository.FeeRecordRepository;
 import com.residex.feerecord.service.FeeService;
@@ -32,9 +33,10 @@ public class FeeServiceImpl
         Student student =
                 studentRepository.findById(studentId)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new ResourceNotFoundException(
                                         "Student not found"
-                                ));
+                                )
+                                );
 
         StayRecord stayRecord =
                 stayRecordRepository
@@ -44,7 +46,7 @@ public class FeeServiceImpl
                                 year
                         )
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new ResourceNotFoundException(
                                         "Stay record not found"
                                 ));
 

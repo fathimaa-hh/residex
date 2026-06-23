@@ -1,6 +1,7 @@
 package com.residex.leave.service.impl;
 
 import com.residex.common.enums.LeaveStatus;
+import com.residex.exception.ResourceNotFoundException;
 import com.residex.leave.dto.CreateLeaveRequest;
 import com.residex.leave.dto.LeaveResponse;
 import com.residex.leave.entity.LeaveRequest;
@@ -30,7 +31,7 @@ public class LeaveServiceImpl implements LeaveService {
                 studentRepository.findById(
                         request.getStudentId()
                 ).orElseThrow(() ->
-                        new RuntimeException(
+                        new ResourceNotFoundException(
                                 "Student not found"
                         ));
 
@@ -142,7 +143,7 @@ public class LeaveServiceImpl implements LeaveService {
         LeaveRequest leave =
                 leaveRepository.findById(leaveId)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new ResourceNotFoundException(
                                         "Leave not found"
                                 ));
 
@@ -162,9 +163,10 @@ public class LeaveServiceImpl implements LeaveService {
         LeaveRequest leave =
                 leaveRepository.findById(leaveId)
                         .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Leave not found"
-                                ));
+                                new ResourceNotFoundException(
+                                        "Student not found"
+                                )
+                                );
 
         leave.setStatus(
                 LeaveStatus.REJECTED

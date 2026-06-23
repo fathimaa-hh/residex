@@ -3,6 +3,7 @@ package com.residex.stayrecord.service.impl;
 import com.residex.attendance.entity.AttendanceRecord;
 import com.residex.attendance.repository.AttendanceRepository;
 import com.residex.common.enums.AttendanceStatus;
+import com.residex.exception.ResourceNotFoundException;
 import com.residex.student.entity.Student;
 import com.residex.student.repository.StudentRepository;
 import com.residex.stayrecord.entity.StayRecord;
@@ -34,9 +35,10 @@ public class StayServiceImpl implements StayService {
         Student student =
                 studentRepository.findById(studentId)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new ResourceNotFoundException(
                                         "Student not found"
-                                ));
+                                )
+                                );
 
         LocalDate startDate =
                 LocalDate.of(year, month, 1);

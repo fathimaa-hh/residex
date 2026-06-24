@@ -2,14 +2,18 @@ package com.residex.student.service;
 
 import com.residex.student.dto.AssignRoomRequest;
 import com.residex.student.dto.StudentResponse;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface StudentService {
 
-    List<StudentResponse> getAllStudents();
+    Page<StudentResponse> getAllStudents(
+            int page,
+            int size
+    );
 
-    StudentResponse getStudent(Long studentId);
+    StudentResponse getStudent(
+            Long studentId
+    );
 
     StudentResponse assignRoom(
             Long studentId,

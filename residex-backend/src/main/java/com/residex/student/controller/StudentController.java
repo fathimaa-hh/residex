@@ -6,7 +6,10 @@ import com.residex.student.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
 
 
 
@@ -36,9 +39,26 @@ public class StudentController {
             summary = "Get all students"
     )
     @GetMapping
-    public List<StudentResponse> getAllStudents() {
-        return studentService.getAllStudents();
-    }
+        public Page<StudentResponse>
+        getAllStudents(
+
+                @RequestParam(
+                        defaultValue = "0"
+                )
+                int page,
+
+                @RequestParam(
+                        defaultValue = "10"
+                )
+                int size
+        ) {
+
+        return studentService
+                .getAllStudents(
+                        page,
+                        size
+                );
+        }
 
 
     @Operation(

@@ -10,7 +10,13 @@ import com.residex.student.repository.StudentRepository;
 import com.residex.student.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.List;
+
+
+import org.springframework.data.domain.Sort;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -20,13 +26,23 @@ public class StudentServiceImpl implements StudentService {
     private final RoomRepository roomRepository;
 
     @Override
-    public List<StudentResponse> getAllStudents() {
+        public Page<StudentResponse> getAllStudents(
+                int page,
+                int size
+        ) {
 
-        return studentRepository.findAll()
-                .stream()
-                .map(this::mapToResponse)
-                .toList();
-    }
+        Pageable pageable =
+                PageRequest.of(
+                        page,
+                        size,
+                        Sort.by("id")
+                                .descending()
+                );
+
+        return studentRepository
+                .findAll(pageable)
+                .map(this::mapToResponse);
+        }
 
     @Override
     public StudentResponse getStudent(Long studentId) {

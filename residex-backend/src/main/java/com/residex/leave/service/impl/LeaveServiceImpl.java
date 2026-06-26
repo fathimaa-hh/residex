@@ -1,19 +1,24 @@
 package com.residex.leave.service.impl;
 
 import com.residex.common.enums.LeaveStatus;
+import com.residex.common.enums.NotificationType;
 import com.residex.exception.ResourceNotFoundException;
 import com.residex.leave.dto.CreateLeaveRequest;
 import com.residex.leave.dto.LeaveResponse;
 import com.residex.leave.entity.LeaveRequest;
 import com.residex.leave.repository.LeaveRequestRepository;
 import com.residex.leave.service.LeaveService;
+import com.residex.notification.service.NotificationService;
 import com.residex.student.entity.Student;
 import com.residex.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+
+
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +26,8 @@ public class LeaveServiceImpl implements LeaveService {
 
     private final LeaveRequestRepository leaveRepository;
     private final StudentRepository studentRepository;
+    private final NotificationService notificationService;
+
 
     @Override
     public LeaveResponse applyLeave(
@@ -153,8 +160,21 @@ public class LeaveServiceImpl implements LeaveService {
 
         leaveRepository.save(leave);
 
+        notificationService.createNotification(
+
+                leave.getStudent().getId(),
+
+                "Leave Approved",
+
+                "Your leave request has been approved.",
+
+                NotificationType.LEAVE
+        );
+
         return mapToResponse(leave);
         }
+
+
         @Override
         public LeaveResponse rejectLeave(
                 Long leaveId
@@ -164,15 +184,25 @@ public class LeaveServiceImpl implements LeaveService {
                 leaveRepository.findById(leaveId)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
-                                        "Student not found"
-                                )
-                                );
+                                        "Leave not found"
+                                ));
 
         leave.setStatus(
                 LeaveStatus.REJECTED
         );
 
         leaveRepository.save(leave);
+
+        notificationService.createNotification(
+
+                leave.getStudent().getId(),
+
+                "Leave Rejected",
+
+                "Your leave request has been rejected.",
+
+                NotificationType.LEAVE
+        );
 
         return mapToResponse(leave);
         }

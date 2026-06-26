@@ -1,10 +1,12 @@
 package com.residex.feerecord.service.impl;
 
 
+import com.residex.common.enums.NotificationType;
 import com.residex.exception.ResourceNotFoundException;
 import com.residex.feerecord.entity.FeeRecord;
 import com.residex.feerecord.repository.FeeRecordRepository;
 import com.residex.feerecord.service.FeeService;
+import com.residex.notification.service.NotificationService;
 import com.residex.student.entity.Student;
 import com.residex.student.repository.StudentRepository;
 import com.residex.stayrecord.entity.StayRecord;
@@ -22,6 +24,7 @@ public class FeeServiceImpl
     private final StayRecordRepository stayRecordRepository;
 
     private final FeeRecordRepository feeRecordRepository;
+    private final NotificationService notificationService;
 
     @Override
     public void generateMonthlyFee(
@@ -48,7 +51,8 @@ public class FeeServiceImpl
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
                                         "Stay record not found"
-                                ));
+                                )
+                                );
 
         double feePerDay =
                 student.getRoom()
@@ -91,5 +95,20 @@ public class FeeServiceImpl
         feeRecord.setPaid(false);
 
         feeRecordRepository.save(feeRecord);
+
+        notificationService.createNotification(
+
+                student.getId(),
+
+                "Monthly Fee Generated",
+
+                "Your hostel fee for "
+                        + month
+                        + "/"
+                        + year
+                        + " has been generated.",
+
+                NotificationType.FEE
+        );
     }
 }

@@ -18,12 +18,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import com.residex.notification.service.NotificationService;
+import com.residex.common.enums.NotificationType;
+
 @Service
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
     
     private final StudentRepository studentRepository;
     private final RoomRepository roomRepository;
+    private final NotificationService notificationService;
 
     @Override
         public Page<StudentResponse> getAllStudents(
@@ -82,6 +86,20 @@ public class StudentServiceImpl implements StudentService {
         student.setRoom(room);
 
         studentRepository.save(student);
+
+        notificationService.createNotification(
+
+                student.getId(),
+
+                "Room Assigned",
+
+                "You have been assigned Room "
+                        + room.getRoomNumber()
+                        + " in "
+                        + room.getResidence().getName(),
+
+                NotificationType.ROOM
+        );
 
         return mapToResponse(student);
     }

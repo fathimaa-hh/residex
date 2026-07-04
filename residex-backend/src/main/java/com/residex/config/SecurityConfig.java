@@ -49,6 +49,7 @@ public class SecurityConfig {
                                         "/api/stay/**",
                                         "/api/fees/**",
                                          "/api/notifications/**",
+                                         "/api/reports/**",
                                         "/api/leaves/pending",
                                         "/api/leaves/*/approve",
                                         "/api/leaves/*/reject"
